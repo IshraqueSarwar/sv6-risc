@@ -4,7 +4,7 @@
 
 
 void initlock(spinlock_t *lk, const char *name){
-	lk->locked = 1;
+	lk->locked = 0;
 	lk->name = name;
 	lk->cpu = -1;
 }

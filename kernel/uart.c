@@ -1,5 +1,5 @@
-#include <stdint.h>
 #include "memlayout.h"
+#include "types.h"
 
 #define UART0 0x10000000L
 

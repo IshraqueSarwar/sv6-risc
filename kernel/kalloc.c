@@ -1,7 +1,9 @@
 #include "kalloc.h"
 #include "spinlock.h"
 #include "memlayout.h"
-#include <string.h>
+#include "printf.h"
+#include "types.h"
+
 
 struct run{
 	struct run *next;
@@ -9,14 +11,32 @@ struct run{
 
 static struct run *freelist = 0;
 static spinlock_t kmem_lock;
-static unsigned long kmem_start, kmem_end;
+
+
+
+// we need to move this memset later to string.h
+void* memset(void* dest, int ch, size_t count) {
+    unsigned char* p = dest;
+    while(count--) {
+        *p++ = (unsigned char)ch;
+    }
+    return dest;
+}
 
 
 void kinit(void *start_ptr, void *end_ptr){
+	//sanity check
+	if(start_ptr>=end_ptr){
+		kprintf("kinit: invalid memory range %x-%x\n", start_ptr, end_ptr);
+	}
+
+
 	initlock(&kmem_lock, "kmem");
 
-	kmem_start = PGGROUNDUP(start_ptr);
-	kmem_end = PGGROUNDDOWN(end_ptr);
+	uintptr_t kmem_start = PGROUNDUP_PTR((uintptr_t)start_ptr);
+	uintptr_t kmem_end = PGROUNDDOWN_PTR((uintptr_t)end_ptr);
+
+	kprintf("kinit: start=%x, end=%x\n", kmem_start, kmem_end);
 
 	// this part is very cool
 	// so initially p1 = r1->0(as freelist)
@@ -24,11 +44,15 @@ void kinit(void *start_ptr, void *end_ptr){
 	// over time as p1..p2..p3(pages are looped)
 	// freelist = (rN) (which points to ->rN-1...->r3->r2->r1->0);
 	// such a cool way to implement!
-	for(unsigned long p = kmem_start; p+PGSIZE<=kmem_end;p+=PGSIZE){
+	int i = 0;
+	for(uintptr_t p = kmem_start; p<kmem_end;p+=PGSIZE){
 		struct run *r = (struct run*)p;
-		p->next = freelist;
+		r->next = freelist;
 		freelist = r;
+		//kprintf("freepage: %d\n", i);
+		//i++;
 	}
+	kprintf("kinit: Done creating freepages!\n");
 
 }
 
@@ -36,7 +60,6 @@ void kinit(void *start_ptr, void *end_ptr){
 void *kalloc(void){
 	// acquire spinlock to avoid raceconditions
 	acquire(&kmem_lock);
-	
 	// get the most recent node/page
 	struct run *r = freelist;
 	if(r!=0){

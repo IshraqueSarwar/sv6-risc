@@ -12,7 +12,7 @@ void kmain(void){
 	kprintf("kernel end:   %x\n",_kernel_end);
 	kprintf("PHYSTOP:      %x\n", (void *)PHYSTOP);
 	
-	kinit(_kernel_end, (void*)PHYSTOP);
+	kinit(&_kernel_end, (void*)PHYSTOP);
 
 
 	// Test 1: allocating single page
@@ -22,6 +22,9 @@ void kmain(void){
 	}else{
 		kprintf("allocation failed\n");
 	}
+	
+	kprintf("Done with allocation test 1\n");
+
 
 	// Test 2: allocating multiple pages
 	for(int i = 0;i<5;i++){

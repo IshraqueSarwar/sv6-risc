@@ -1,0 +1,17 @@
+Your Memory Map:
+─────────────────────────────────────────────────────────────────
+0x80200000: _kernel_start (Kernel load address)
+    ├─ Kernel code (.text)
+    ├─ Kernel data (.data, .rodata, .bss)
+    └─ ...
+│
+0x80202000: _kernel_end (End of kernel in memory)
+    ├─ ▼▼▼ FREE MEMORY FOR ALLOCATOR STARTS HERE ▼▼▼
+    ├─ Page 1: 0x80202000 - 0x80203000
+    ├─ Page 2: 0x80203000 - 0x80204000  
+    ├─ Page 3: 0x80204000 - 0x80205000
+    ├─ ...
+    └─ ...
+│
+0x88000000: PHYSTOP (End of physical memory)
+─────────────────────────────────────────────────────────────────

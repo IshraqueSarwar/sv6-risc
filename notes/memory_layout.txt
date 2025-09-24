@@ -1,0 +1,33 @@
+Physical Memory Map:
+─────────────────────────────────────────────────────────────────
+0x00000000 - 0x08000000: [UNUSED/DEVICES]    (128MB)
+                          (often used for memory-mapped I/O)
+│
+├─ 0x08000000 - 0x08020000: [BOOTLOADER]     (128KB)
+│                           (OpenSBI, etc.)
+│
+├─ 0x08020000 - 0x08020200: [KERNEL ENTRY]   (512 bytes)
+│                           (_start, trampoline)
+│
+├─ 0x08020200 - 0x0802xxxx: [KERNEL CODE/DATA] 
+│   ├─ .text (code)
+│   ├─ .rodata (read-only data) 
+│   ├─ .data (initialized data)
+│   └─ .bss (uninitialized data)
+│
+├─ 0x0802xxxx - 0x08300000: [KERNEL HEAP]    (~3MB)
+│   ├─ Page allocator (kalloc/kfree)
+│   └─ Kernel objects, dynamic memory
+│
+├─ 0x08300000 - 0x08600000: [USER PROCESSES]  (3MB each)
+│   ├─ Process 1: text, data, stack
+│   ├─ Process 2: text, data, stack
+│   └─ ...
+│
+└─ 0x08600000 - 0x08800000: [DEVICE MEMORY]   (2MB)
+    ├─ UART (0x10000000)
+    ├─ CLINT (0x2000000) 
+    ├─ PLIC (0x0c000000)
+    └─ Other memory-mapped I/O
+─────────────────────────────────────────────────────────────────
+0x08800000: PHYSTOP (End of available physical memory)
