@@ -3,10 +3,11 @@ CC = $(PLATFORM)-gcc
 LD = $(PLATFORM)-ld
 
 CFLAGS = -Wall -Wextra -O2 -ffreestanding -nostdlib \
-	 -march=rv64imac -mabi=lp64 -mcmodel=medany
+	 -march=rv64imac_zicsr -mabi=lp64 -mcmodel=medany
 
 OBJS = kernel/entry.o kernel/uart.o kernel/kmain.o kernel/printf.o \
-       kernel/kalloc.o kernel/spinlock.o
+       kernel/kalloc.o kernel/spinlock.o kernel/trap.o kernel/trapentry.o \
+       kernel/plic.o kernel/proc.o kernel/timer.o
 
 all: kernel.elf
 

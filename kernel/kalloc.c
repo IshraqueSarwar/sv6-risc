@@ -33,8 +33,8 @@ void kinit(void *start_ptr, void *end_ptr){
 
 	initlock(&kmem_lock, "kmem");
 
-	uintptr_t kmem_start = PGROUNDUP_PTR((uintptr_t)start_ptr);
-	uintptr_t kmem_end = PGROUNDDOWN_PTR((uintptr_t)end_ptr);
+	void* kmem_start = PGROUNDUP_PTR((uintptr_t)start_ptr);
+	void* kmem_end = PGROUNDDOWN_PTR((uintptr_t)end_ptr);
 
 	kprintf("kinit: start=%x, end=%x\n", kmem_start, kmem_end);
 
@@ -44,8 +44,8 @@ void kinit(void *start_ptr, void *end_ptr){
 	// over time as p1..p2..p3(pages are looped)
 	// freelist = (rN) (which points to ->rN-1...->r3->r2->r1->0);
 	// such a cool way to implement!
-	int i = 0;
-	for(uintptr_t p = kmem_start; p<kmem_end;p+=PGSIZE){
+	//int i = 0;
+	for(void* p = kmem_start; p<kmem_end;p+=PGSIZE){
 		struct run *r = (struct run*)p;
 		r->next = freelist;
 		freelist = r;
