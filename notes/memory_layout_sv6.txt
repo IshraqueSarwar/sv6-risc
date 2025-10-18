@@ -1,4 +1,4 @@
-Your Memory Map:
+SV6 Memory Map:
 ─────────────────────────────────────────────────────────────────
 0x80200000: _kernel_start (Kernel load address)
     ├─ Kernel code (.text)
